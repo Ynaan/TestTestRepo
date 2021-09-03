@@ -1,1 +1,101 @@
+# Databricks notebook source
+print("this is first1111 \r this is second222 \r this is third333")
 
+# COMMAND ----------
+
+import time
+for i in range(1, 10000):
+    print(i)
+    time.sleep(1.0)
+
+# COMMAND ----------
+
+# MAGIC %pip install tqdm
+
+# COMMAND ----------
+
+from tqdm import tqdm
+from time import sleep
+for i in tqdm(range(10000)):
+  sleep(1.0)
+
+# COMMAND ----------
+
+# MAGIC %pip install mlflow
+
+# COMMAND ----------
+
+import tempfile
+from sklearn import datasets
+from sklearn.linear_model import LogisticRegression
+
+import mlflow
+from mlflow.tracking import MlflowClient
+from mlflow.tracking.fluent import _get_experiment_id
+
+# Verify that MLflow is configured to track runs to the Databricks-hosted tracking
+# server and that the configured experiment ID is either absent or holds the default
+# value of 0, which is not supported on Databricks. This ensures that we're mimicing a
+# realistic tracking environment equivalent to running a workflow within a Databricks Job
+assert mlflow.get_tracking_uri() == "databricks"
+experiment_id = _get_experiment_id()
+assert not experiment_id or experiment_id == "0"
+
+def get_latest_run():
+  try:
+    runs = MlflowClient().search_runs(
+      experiment_id, order_by=["attribute.start_time DESC"]
+    )
+    return runs[0] if len(runs) > 0 else None
+  except Exception:
+    # NB: Attempting to search runs against an invalid experiment on Databricks may throw
+    # an exception. In this case, we assume that no run content is available
+    return None
+
+# Train a model supported by auto-autologging and verify that training is successful,
+# despite the fact that autologging is unable to create an MLflow run and log content
+iris = datasets.load_iris()
+logistic = LogisticRegression(max_iter=200)
+logistic.fit(iris.data, iris.target)
+
+# Verify that no MLflow runs were created
+assert not get_latest_run()
+
+# COMMAND ----------
+
+
+
+# COMMAND ----------
+
+import matplotlib.pyplot as plt
+plt.plot([1,2,3,4])
+
+# COMMAND ----------
+
+# MAGIC %sh ls -al /tmp
+
+# COMMAND ----------
+
+import matplotlib.pyplot as plt
+plt.style.use('bmh')
+plt.plot([1,2,3,4])
+fig = plt.gcf()
+fig.savefig('/tmp/expected-12afbb55-946b-404d-a172-bebd676b16a0.png')
+fig.clear()
+
+# COMMAND ----------
+
+# MAGIC %sh ls /tmp
+
+# COMMAND ----------
+
+displayHTML(/tmp/expected-12afbb55-946b-404d-a172-bebd676b16a0.png)
+
+# COMMAND ----------
+
+import matplotlib.pyplot as plt
+plt.style.use('bmh')
+plt.plot([1,2,3,4])
+fig = plt.gcf()
+fig.savefig('/tmp/actual-12afbb55-946b-404d-a172-bebd676b16a0.png', )
+fig.clear()
