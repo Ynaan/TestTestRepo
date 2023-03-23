@@ -1,2 +1,2 @@
 # Databricks notebook source
-# MAGIC %sql select * from pavan
+11 + 1
