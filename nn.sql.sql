@@ -1,0 +1,3 @@
+-- Databricks notebook source
+-- MAGIC %python
+-- MAGIC display(spark.range(1, 10))

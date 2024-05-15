@@ -1,7 +1,8 @@
 # Databricks notebook source
-# MAGIC %sql select 1 + 1
-# MAGIC kjlkjklj
-# MAGIC kjkkj
+import time
+for i in range(1, 100000):
+  time.sleep(1)
+  print(i.     lslsls
 
 # COMMAND ----------
 
